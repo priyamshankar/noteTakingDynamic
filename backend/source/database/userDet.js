@@ -7,7 +7,7 @@ const userDetSchema=new mongoose.Schema({
     state:String,
     zip:Number,
     password:String,
-    cnfmpassword:String
+    cnfmPassword:String
 })
 const userDetModel=new mongoose.model("userDetails",userDetSchema);
 module.exports=userDetModel;

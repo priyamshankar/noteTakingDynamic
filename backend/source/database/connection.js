@@ -15,10 +15,15 @@ router.get("/registration", (req, res) => {
 })
 router.post("/registration", async (req,res)=>{
     try{
+        if(req.body.password===req.body.cnfmPassword){
             console.log(req.body);
             res.render("index");
             const saveUserDet=new userDetModel(req.body);
             await saveUserDet.save();
+        }
+        else{
+            res.send("password didn't matche");
+        }
     }catch (err){
             console.log(err);
     }
