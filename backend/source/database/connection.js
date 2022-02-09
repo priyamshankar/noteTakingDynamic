@@ -13,14 +13,12 @@ router.get("/registration", (req, res) => {
     // res.send("this is the registration page");
     res.render("registrationPage");
 })
-router.get("/login",(req,res)=>{
-    res.render("loginPage");
-})
+
 router.post("/registration", async (req,res)=>{
     try{
         if(req.body.password===req.body.cnfmPassword){
             console.log(req.body);
-            res.render("login");
+            res.render("loginPage");
             const saveUserDet=new userDetModel(req.body);
             await saveUserDet.save();
         }
@@ -30,6 +28,10 @@ router.post("/registration", async (req,res)=>{
     }catch (err){
             console.log(err);
     }
+})
+
+router.get("/login",(req,res)=>{
+    res.render("loginPage");
 })
 
 
