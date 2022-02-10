@@ -53,10 +53,10 @@ router.post("/login", async (req, res) => {
         const userName = req.body.userName;
         const loginDetDb = await userDetModel.findOne({ userName: userName });
         const password = req.body.password;
-
+        const pwComp=await bcrypt.compare(password,loginDetDb.password);
         console.log(loginDetDb);
         // res.send("index");
-        if (loginDetDb.password === password) {
+        if (pwComp) {
             res.render("index");
         }
         else {
