@@ -1,5 +1,5 @@
 const express = require("express");
-const bcrypt=require("bcryptjs");
+const bcrypt = require("bcryptjs");
 // const mongoose =require("mongoose");
 const router = new express.Router();
 const app = express();
@@ -18,11 +18,11 @@ router.get("/registration", (req, res) => {
 
 router.post("/registration", async (req, res) => {
     try {
-        const fetchPwd=req.body.password;
-        const secPwd=await bcrypt.hash(fetchPwd,10);
-        const pwComp=await bcrypt.compare(req.body.cnfmPassword,secPwd);
+        const fetchPwd = req.body.password;
+        const secPwd = await bcrypt.hash(fetchPwd, 10);
+        const pwComp = await bcrypt.compare(req.body.cnfmPassword, secPwd);
         if (pwComp) {
-            console.log(req.body);
+            // console.log(req.body);
             res.render("loginPage");
             const saveUserDet = new userDetModel({
                 firstName: req.body.firstName,
@@ -34,7 +34,9 @@ router.post("/registration", async (req, res) => {
                 password: secPwd,
                 cnfmPassword: secPwd
             });
+            console.log(saveUserDet);
             await saveUserDet.save();
+            const token = await saveUserDet.generateAuthToken();//generateAuthToken is user defined
         }
         else {
             res.send("password didn't matche");
@@ -42,6 +44,7 @@ router.post("/registration", async (req, res) => {
     } catch (err) {
         console.log(err);
     }
+
 })
 
 router.get("/login", (req, res) => {
@@ -53,8 +56,8 @@ router.post("/login", async (req, res) => {
         const userName = req.body.userName;
         const loginDetDb = await userDetModel.findOne({ userName: userName });
         const password = req.body.password;
-        const pwComp=await bcrypt.compare(password,loginDetDb.password);
-        console.log(loginDetDb);
+        const pwComp = await bcrypt.compare(password, loginDetDb.password);
+        // console.log(loginDetDb);
         // res.send("index");
         if (pwComp) {
             res.render("index");
@@ -62,6 +65,8 @@ router.post("/login", async (req, res) => {
         else {
             res.send("password or user id wrong")
         }
+        // const token = await loginDetDb.generateAuthToken();
+        // console.log(token);
 
     } catch (err) {
         res.send("error");

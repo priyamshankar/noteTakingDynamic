@@ -1,13 +1,36 @@
 const mongoose = require("mongoose");
-const userDetSchema=new mongoose.Schema({
-    firstName:String,
-    lastName:String,
-    userName:String,
-    city:String,
-    state:String,
-    zip:Number,
-    password:String,
-    cnfmPassword:String
+const jwt = require("jsonwebtoken");
+const userDetSchema = new mongoose.Schema({
+    firstName: String,
+    lastName: String,
+    userName: String,
+    city: String,
+    state: String,
+    zip: Number,
+    password: String,
+    cnfmPassword: String,
+    tokens: [{
+        token: {
+            type: String,
+            required: true
+        }
+    }]
 })
-const userDetModel=new mongoose.model("userDetails",userDetSchema);
-module.exports=userDetModel;
+
+userDetSchema.methods.generateAuthToken = async function () {
+    try {
+        // console.log(this._id);
+        const token = await jwt.sign({ _id: this._id.toString() }, "orthewordlimitforthetokenadnihopewordsha");
+        this.tokens = this.tokens.concat({ token: token });
+        await this.save();
+        console.log(token);
+        return token;
+    } catch (error) {
+        console.log(error);
+        console.log("error");
+        res.send(error);
+    }
+}
+
+const userDetModel = new mongoose.model("userDetails1", userDetSchema);
+module.exports = userDetModel;
