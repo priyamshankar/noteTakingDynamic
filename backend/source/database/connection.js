@@ -1,6 +1,7 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
-const app = express();
+const auth=require("../middleware/auth");
+// const app = express();
 const router = new express.Router();
 const userDetModel = require("./userDet");
 const bcrypt = require("bcryptjs");
@@ -66,7 +67,7 @@ router.post("/login", async (req, res) => {
         // console.log(loginDetDb);
         if (pwComp) {
             const token = await loginDetDb.generateAuthToken();
-            res.cookie("jwt Login", token, {
+            res.cookie("jwt", token, {
                 expires: new Date(Date.now() + 3000000),
                 httpOnly: true
             });
@@ -82,4 +83,9 @@ router.post("/login", async (req, res) => {
         console.log(err);
     }
 })
+
+router.get("/authenticate",auth,(req,res)=>{
+    res.render("authenticate");
+})
+
 module.exports = router; 
