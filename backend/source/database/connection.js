@@ -82,13 +82,4 @@ router.post("/login", async (req, res) => {
         console.log(err);
     }
 })
-// router.get('/cookie', (req, res) => {
-//     res.cookie(`hikack`, `heyjact`);
-//     res.send("cookie page");
-//     console.log(cookie);
-// })
-// router.get('/setcookie', (req, res) => {
-//     res.cookie(`Cookie token name`, `encrypted cookie string Value`);
-//     res.send('Cookie have been saved successfully');
-// });
 module.exports = router; 
