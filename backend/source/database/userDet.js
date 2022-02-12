@@ -24,7 +24,7 @@ userDetSchema.methods.generateAuthToken = async function () {
         const token = await jwt.sign({ _id: this._id.toString() }, process.env.TOKEN_KEY);
         this.tokens = this.tokens.concat({ token: token });
         await this.save();
-        console.log(token);
+        // console.log(token);
         return token;
     } catch (error) {
         console.log(error);

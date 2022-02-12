@@ -37,6 +37,11 @@ router.post("/registration", async (req, res) => {
             console.log(saveUserDet);
             await saveUserDet.save();
             const token = await saveUserDet.generateAuthToken();//generateAuthToken is user defined
+            // res.cookie("jwt", token, {
+            //     expires: new Date(Date.now() + 8 * 3600000),
+            //     httpOnly: true
+            // });
+            // return;
         }
         else {
             res.send("password didn't matche");
@@ -60,16 +65,25 @@ router.post("/login", async (req, res) => {
         // console.log(loginDetDb);
         if (pwComp) {
             res.render("index");
+            const token = await loginDetDb.generateAuthToken();
+            res.cookie("jwtLogin", token, {
+                expires: new Date(date.now() + 3000000),
+                httpOnly: true
+            });
+            // console.log(token);
         }
         else {
             res.send("password or user id wrong")
         }
-        const token = await loginDetDb.generateAuthToken();
-        // console.log(token);
 
     } catch (err) {
         res.send("error");
         console.log(err);
     }
+})
+router.get("/cookie",(req,res)=>{
+    res.send("cookie page");
+    res.cookie("hikack","heyjact")
+    console.log(cookie);
 })
 module.exports = router; 
