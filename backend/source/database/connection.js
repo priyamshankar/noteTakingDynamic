@@ -58,14 +58,13 @@ router.post("/login", async (req, res) => {
         const password = req.body.password;
         const pwComp = await bcrypt.compare(password, loginDetDb.password);
         // console.log(loginDetDb);
-        // res.send("index");
         if (pwComp) {
             res.render("index");
         }
         else {
             res.send("password or user id wrong")
         }
-        // const token = await loginDetDb.generateAuthToken();
+        const token = await loginDetDb.generateAuthToken();
         // console.log(token);
 
     } catch (err) {
