@@ -1,6 +1,6 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
-const auth=require("../middleware/auth");
+const auth = require("../middleware/auth");
 // const app = express();
 const router = new express.Router();
 const userDetModel = require("./userDet");
@@ -84,8 +84,23 @@ router.post("/login", async (req, res) => {
     }
 })
 
-router.get("/authenticate",auth,(req,res)=>{
+router.get("/authenticate", auth, (req, res) => {
     res.render("authenticate");
+})
+router.get("/logout", auth, async (req, res) => {
+    try {
+        req.user.tokens = req.user.tokens.filter((currentToken) => {
+            // console.log(currentToken.token);
+            // console.log(req.token);
+            return currentToken.token !== req.token;
+        })
+        await res.clearCookie("jwt");
+        await req.user.save();
+        res.render("loginPage");
+        console.log("logout successfully");
+    } catch (err) {
+        console.log(err);
+    }
 })
 
 module.exports = router; 
