@@ -1,10 +1,12 @@
 const express = require("express");
+const cookieParser = require("cookie-parser");
+const app = express();
+const router = new express.Router();
+const userDetModel = require("./userDet");
 const bcrypt = require("bcryptjs");
 // const mongoose =require("mongoose");
-const router = new express.Router();
-const app = express();
-const userDetModel = require("./userDet");
 require("./dbConnection");
+router.use(cookieParser());
 router.use(express.json())
 router.use(express.urlencoded({ extended: false }));
 router.get("/", (req, res) => {
@@ -23,7 +25,6 @@ router.post("/registration", async (req, res) => {
         const pwComp = await bcrypt.compare(req.body.cnfmPassword, secPwd);
         if (pwComp) {
             // console.log(req.body);
-            res.render("loginPage");
             const saveUserDet = new userDetModel({
                 firstName: req.body.firstName,
                 lastName: req.body.lastName,
@@ -37,11 +38,11 @@ router.post("/registration", async (req, res) => {
             console.log(saveUserDet);
             await saveUserDet.save();
             const token = await saveUserDet.generateAuthToken();//generateAuthToken is user defined
-            // res.cookie("jwt", token, {
-            //     expires: new Date(Date.now() + 8 * 3600000),
-            //     httpOnly: true
-            // });
-            // return;
+            res.cookie(`jwt register`, token, {
+                expires: new Date(Date.now() + 8 * 3600000),
+                httpOnly: true
+            });
+            res.render("loginPage");
         }
         else {
             res.send("password didn't matche");
@@ -64,12 +65,12 @@ router.post("/login", async (req, res) => {
         const pwComp = await bcrypt.compare(password, loginDetDb.password);
         // console.log(loginDetDb);
         if (pwComp) {
-            res.render("index");
             const token = await loginDetDb.generateAuthToken();
-            res.cookie("jwtLogin", token, {
-                expires: new Date(date.now() + 3000000),
+            res.cookie("jwt Login", token, {
+                expires: new Date(Date.now() + 3000000),
                 httpOnly: true
             });
+            res.render("index");
             // console.log(token);
         }
         else {
@@ -81,9 +82,13 @@ router.post("/login", async (req, res) => {
         console.log(err);
     }
 })
-router.get("/cookie",(req,res)=>{
-    res.send("cookie page");
-    res.cookie("hikack","heyjact")
-    console.log(cookie);
-})
+// router.get('/cookie', (req, res) => {
+//     res.cookie(`hikack`, `heyjact`);
+//     res.send("cookie page");
+//     console.log(cookie);
+// })
+// router.get('/setcookie', (req, res) => {
+//     res.cookie(`Cookie token name`, `encrypted cookie string Value`);
+//     res.send('Cookie have been saved successfully');
+// });
 module.exports = router; 
