@@ -15,7 +15,6 @@ router.get("/", (req, res) => {
     res.render("index")
 })
 router.get("/registration", (req, res) => {
-    // res.send("this is the registration page");
     res.render("registrationPage");
 })
 
