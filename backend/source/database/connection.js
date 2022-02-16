@@ -55,6 +55,7 @@ router.post("/registration", async (req, res) => {
 
 router.get("/login", (req, res) => {
     res.render("loginPage");
+    console.log(req.cookies.jwt);
 })
 
 router.post("/login", async (req, res) => {
@@ -74,7 +75,7 @@ router.post("/login", async (req, res) => {
             // console.log(token);
         }
         else {
-            res.send("password or user id wrong")
+            res.send("password or user id wrong");
         }
 
     } catch (err) {
@@ -87,7 +88,7 @@ router.get("/authenticate", auth, (req, res) => {
     res.render("authenticate",{
         users:req.user
     });
-    console.log(req.user.firstName);
+    // console.log(req.user.firstName);
 })
 router.get("/logout", auth, async (req, res) => {
     try {
