@@ -79,7 +79,8 @@ router.post("/login", async (req, res) => {
         expires: new Date(Date.now() + 3000000),
         httpOnly: true,
       });
-      res.render("index");
+      // res.render("index");
+      res.render("authenticate");
       // console.log(token);
     } else {
       res.send("password or user id wrong");
