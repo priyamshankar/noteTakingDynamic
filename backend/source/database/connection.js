@@ -85,6 +85,7 @@ router.post("/login", async (req, res) => {
 
 router.get("/authenticate", auth, (req, res) => {
     res.render("authenticate");
+    console.log(req.user.firstName);
 })
 router.get("/logout", auth, async (req, res) => {
     try {

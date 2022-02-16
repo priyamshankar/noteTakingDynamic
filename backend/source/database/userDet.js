@@ -25,6 +25,7 @@ userDetSchema.methods.generateAuthToken = async function () {
         this.tokens = this.tokens.concat({ token: token });
         await this.save();
         // console.log(token);
+        // console.log(this.firstName);
         return token;
     } catch (error) {
         console.log(error);
