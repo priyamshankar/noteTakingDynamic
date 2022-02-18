@@ -20,6 +20,7 @@ router.get("/", async (req, res) => {
   // console.log(req.cookies.jwt);
   console.log(user);
 });
+
 router.get("/registration", (req, res) => {
   res.render("registrationPage");
 });
@@ -97,6 +98,7 @@ router.get("/authenticate", auth, (req, res) => {
   });
   // console.log(req.user.firstName);
 });
+
 router.get("/logout", auth, async (req, res) => {
   try {
     req.user.tokens = req.user.tokens.filter((currentToken) => {
