@@ -81,7 +81,8 @@ router.post("/login", async (req, res) => {
         httpOnly: true,
       });
       // res.render("index");
-      res.render("authenticate");
+      res.render("loginPage");
+      // res.render("authenticate");
       // console.log(token);
     } else {
       res.send("password or user id wrong");
