@@ -82,7 +82,7 @@ router.post("/login", async (req, res) => {
         httpOnly: true,
       });
       // res.render("index");
-      res.render("loginPage");
+      res.redirect("/");
       // res.render("authenticate");
       // console.log(token);
     } else {
@@ -184,7 +184,7 @@ router.get("/google", passport.authenticate("google"), (req, res) => {
   res.cookie("id", use._id, {
     httpOnly: true,
   });
-  res.redirect("/login");
+  res.redirect("/");
 });
 
 module.exports = router;
