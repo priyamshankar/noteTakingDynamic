@@ -1,6 +1,6 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
-const passport=require("passport");
+const passport = require("passport");
 const auth = require("../middleware/auth");
 // const router = express();
 const router = new express.Router();
@@ -11,13 +11,14 @@ require("./dbConnection");
 router.use(cookieParser());
 router.use(express.json());
 router.use(express.urlencoded({ extended: false }));
+
 router.get("/", async (req, res) => {
   const user = await userDetModel.findOne({ _id: req.cookies.id });
   res.render("index", {
     cookie: req.cookies.jwt,
     users: user,
   });
-//   console.log(user);
+  //   console.log(user);
   // console.log(req.cookies.jwt);
   console.log(user);
 });
@@ -118,7 +119,6 @@ router.get("/logout", auth, async (req, res) => {
   }
 });
 
-
 router.get(
   "/auth/google",
   passport.authenticate("google", { scope: ["profile", "email"] })
@@ -185,6 +185,15 @@ router.get("/google", passport.authenticate("google"), (req, res) => {
     httpOnly: true,
   });
   res.redirect("/");
+});
+
+router.get("/note", async (req, res) => {
+  const user = await userDetModel.findOne({ _id: req.cookies.id });
+  res.render("notePg", {
+    cookie: req.cookies.jwt,
+    users: user,
+  });
+  // res.send("this is the note page");
 });
 
 module.exports = router;
