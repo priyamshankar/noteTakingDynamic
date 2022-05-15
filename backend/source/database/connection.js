@@ -1,7 +1,8 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
+const passport=require("passport");
 const auth = require("../middleware/auth");
-// const app = express();
+// const router = express();
 const router = new express.Router();
 const userDetModel = require("./userDet");
 const bcrypt = require("bcryptjs");
@@ -115,6 +116,75 @@ router.get("/logout", auth, async (req, res) => {
   } catch (err) {
     console.log(err);
   }
+});
+
+
+router.get(
+  "/auth/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+const res = require("express/lib/response");
+const { redirect } = require("express/lib/response");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
+try {
+  passport.use(
+    new GoogleStrategy(
+      {
+        clientID: process.env.client_ID,
+        clientSecret: process.env.client_sec,
+        callbackURL: "/google",
+      },
+      async (accestoken, refreshtoken, profile, done) => {
+        const userId = profile.emails[0].value;
+
+        const loginDetDb = await userDetModel.findOne({
+          userName: userId,
+        });
+        // console.log(loginDetDb);
+        if (loginDetDb) {
+          userToken = await loginDetDb.generateAuthToken();
+          console.log("already a user");
+          done(null, loginDetDb);
+        } else {
+          const saveGUserDet = new userDetModel({
+            firstName: profile.name.givenName,
+            googleId: profile.id,
+            lastName: profile.name.familyName,
+            userName: profile.emails[0].value,
+          });
+          await saveGUserDet.save();
+          userToken = await saveGUserDet.generateAuthToken();
+          console.log("new user");
+          done(null, saveGUserDet);
+        }
+      }
+    )
+  );
+} catch (err) {
+  console.log("caught the error manually this is conosle.log");
+  console.log(err);
+}
+
+passport.serializeUser((user, done) => {
+  use = user;
+  done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+  userDetModel.findById(id).then((user) => {
+    done(null, user);
+  });
+});
+
+router.get("/google", passport.authenticate("google"), (req, res) => {
+  res.cookie(`jwt`, userToken, {
+    httpOnly: true,
+  });
+  res.cookie("id", use._id, {
+    httpOnly: true,
+  });
+  res.redirect("/login");
 });
 
 module.exports = router;
