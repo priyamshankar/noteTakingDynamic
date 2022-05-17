@@ -156,6 +156,20 @@ function rmFav(index) {
     favourites();
 }
 
+async function getData(){
+    let response = await fetch('/noteapi');
+    let noteData= await response.json();
+    // console.log(noteData);
+    return noteData;
+}
+// getData();
+let a=getData();
+// let a =getData();
+// let b=a.firstName;
+// console.log(b);
+console.log(JSON.parse(a));
+
+
 // remaining features are show feature button changes dynamicly to show notes button when pressed
 // syncing the notes to the server
 // making a chrome extension and syncing that to the server

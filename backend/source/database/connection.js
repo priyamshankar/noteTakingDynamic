@@ -196,4 +196,8 @@ router.get("/note", async (req, res) => {
   // res.send("this is the note page");
 });
 
+router.get("/noteapi", auth, async (req, res) => {
+  const noteData = await userDetModel.findOne({ _id: req.cookies.id });
+  res.send(noteData);
+});
 module.exports = router;
