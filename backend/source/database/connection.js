@@ -200,4 +200,19 @@ router.get("/noteapi", auth, async (req, res) => {
   const noteData = await userDetModel.findOne({ _id: req.cookies.id });
   res.send(noteData);
 });
+
+router.post("/note", auth, async (req, res) => {
+  try {
+    const noteDet = await userDetModel.findOne({ _id: req.cookies.id });
+    noteDet.notes = noteDet.notes.concat({
+      title: req.body.titleObj,
+      bodyCont: req.body.contentObj,
+    });
+    res.render("notePg");
+    await noteDet.save();
+  } catch (err) {
+    console.log(err);
+    res.send(err);
+  }
+});
 module.exports = router;

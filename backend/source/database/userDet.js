@@ -1,7 +1,7 @@
 require("dotenv").config();
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
-const userDetSchema = new mongoose.Schema({
+const notePadSchema = new mongoose.Schema({
     firstName: String,
     lastName: String,
     userName: String,
@@ -10,6 +10,10 @@ const userDetSchema = new mongoose.Schema({
     zip: Number,
     password: String,
     cnfmPassword: String,
+    notes: [{
+        title: String,
+        bodyCont: String,
+    }],
     tokens: [{
         token: {
             type: String,
@@ -18,7 +22,7 @@ const userDetSchema = new mongoose.Schema({
     }]
 })
 
-userDetSchema.methods.generateAuthToken = async function () {
+notePadSchema.methods.generateAuthToken = async function () {
     try {
         // console.log(this._id);
         const token = await jwt.sign({ _id: this._id.toString() }, process.env.TOKEN_KEY);
@@ -34,5 +38,5 @@ userDetSchema.methods.generateAuthToken = async function () {
     }
 }
 
-const userDetModel = new mongoose.model("userDetails1", userDetSchema);
+const userDetModel = new mongoose.model("noteDet1", notePadSchema);
 module.exports = userDetModel;
