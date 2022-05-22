@@ -74,7 +74,7 @@ router.post("/login", async (req, res) => {
     const pwComp = await bcrypt.compare(password, loginDetDb.password);
     const user = await userDetModel.findOne({ _id: req.cookies.id });
     if (user != null) {
-      res.redirect("/activity");
+      res.redirect("/");
     }
     if (pwComp) {
       const token = await loginDetDb.generateAuthToken();
@@ -84,7 +84,7 @@ router.post("/login", async (req, res) => {
       res.cookie("id", loginDetDb._id, {
         httpOnly: true,
       });
-      res.redirect("/activity");
+      res.redirect("/");
     } else {
       res.send("password or user id wrong");
     }
