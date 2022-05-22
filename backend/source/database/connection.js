@@ -13,14 +13,7 @@ router.use(express.json());
 router.use(express.urlencoded({ extended: false }));
 
 router.get("/", async (req, res) => {
-  const user = await userDetModel.findOne({ _id: req.cookies.id });
-  res.render("index", {
-    cookie: req.cookies.jwt,
-    users: user,
-  });
-  //   console.log(user);
-  // console.log(req.cookies.jwt);
-  console.log(user);
+  res.redirect("/note");
 });
 
 router.get("/registration", (req, res) => {
