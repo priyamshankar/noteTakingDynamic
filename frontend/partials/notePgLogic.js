@@ -3,15 +3,15 @@ let note = document.getElementById("exampleFormControlTextarea1");
 let add_note = document.getElementById("add_note");
 let showFav = document.getElementById("showFav");
 
-let abcd;
-async function getData() {
-  let response = await fetch("/noteapi");
-  let noteData = await response.json();
-  // console.log(noteData);
-  abcd = noteData;
-  //   console.log(abcd);
-  return noteData;
-}
+// let abcd;
+// async function getData() {
+//   let response = await fetch("/noteapi");
+//   let noteData = await response.json();
+//   // console.log(noteData);
+//   // abcd = noteData;
+//   //   console.log(abcd);
+//   return noteData;
+// }
 // let a = getData().then((resp) => {
 //   // console.log(resp.firstName);
 //   abcd = json.parse(resp);
@@ -21,47 +21,48 @@ async function getData() {
 notesShow();
 
 add_note.addEventListener("click", function () {
-  let strnoteobj;
-  let strtitleobj;
-  let strnote = localStorage.getItem("strnote");
-  let strTitle = localStorage.getItem("strTitle");
+  // let strnoteobj;
+  // let strtitleobj;
+  // let strnote = localStorage.getItem("strnote");
+  // let strTitle = localStorage.getItem("strTitle");
 
-  if (strnote == null && strTitle == null) {
-    strnoteobj = [];
-    strtitleobj = [];
-  } else {
-    strnoteobj = JSON.parse(strnote);
-    strtitleobj = JSON.parse(strTitle);
-  }
-  strnoteobj.push(note.value);
-  strtitleobj.push(title.value);
-  localStorage.setItem("strnote", JSON.stringify(strnoteobj));
-  localStorage.setItem("strTitle", JSON.stringify(strtitleobj));
-  //   title.value = users.firstName;
-  //   note.value = "";
-  //   title.value="";
+  // if (strnote == null && strTitle == null) {
+  //   strnoteobj = [];
+  //   strtitleobj = [];
+  // } else {
+  //   strnoteobj = JSON.parse(strnote);
+  //   strtitleobj = JSON.parse(strTitle);
+  // }
+  // strnoteobj.push(note.value);
+  // strtitleobj.push(title.value);
+  // localStorage.setItem("strnote", JSON.stringify(strnoteobj));
+  // localStorage.setItem("strTitle", JSON.stringify(strtitleobj));
+  // //   title.value = users.firstName;
+  // //   note.value = "";
+  // //   title.value="";
   notesShow();
 });
 
 async function notesShow() {
-  let response = await fetch("/noteapi");
-  let noteData = await response.json();
-  console.log(noteData.notes[0].title);
-  let strnote = localStorage.getItem("strnote");
-  // strnote=noteData.notes.title;
-  let strTitle = localStorage.getItem("strTitle");
-  if (strnote == null && strTitle == null) {
-    strnoteobj = [];
-    strtitleobj = [];
-  } else {
-    strnoteobj = JSON.parse(strnote);
-    strtitleobj = JSON.parse(strTitle);
-  }
-  let domShow = "";
-  let favindex = localStorage.getItem("favIndexstr");
-  favindex = JSON.parse(favindex);
-  await noteData.notes.forEach(function (element, index) {
-    domShow += `  <div class="card text-dark bg-warning mb-3 mx-3 my-3" style="max-width: 18rem;display:inline-flex;min-width: 10rem">
+  try {
+    let response = await fetch("/noteapi");
+    let noteData = await response.json();
+    // console.log(noteData.notes[0].title);
+    // let strnote = localStorage.getItem("strnote");
+    // // strnote=noteData.notes.title;
+    // let strTitle = localStorage.getItem("strTitle");
+    // if (strnote == null && strTitle == null) {
+    //   strnoteobj = [];
+    //   strtitleobj = [];
+    // } else {
+    //   strnoteobj = JSON.parse(strnote);
+    //   strtitleobj = JSON.parse(strTitle);
+    // }
+    let domShow = "";
+    // let favindex = localStorage.getItem("favIndexstr");
+    // favindex = JSON.parse(favindex);
+    await noteData.notes.forEach(function (element, index) {
+      domShow += `  <div class="card text-dark bg-warning mb-3 mx-3 my-3" style="max-width: 18rem;display:inline-flex;min-width: 10rem">
         <div class="card-header">Note ${
           index + 1
         } <button type="button" onclick="deleteNote(this.id)" class="btn-close" aria-label="Close"
@@ -74,39 +75,58 @@ async function notesShow() {
         </div>
     </div>`;
 
-    // ************** trying to add the feature when the notes added to fav the button disappears
-    // if (favindex.index == index) {
-    //     document.getElementById("index").style.display = "none";
-    // }
-  });
+      // ************** trying to add the feature when the notes added to fav the button disappears
+      // if (favindex.index == index) {
+      //     document.getElementById("index").style.display = "none";
+      // }
+    });
 
-  document.getElementById("oops").innerHTML = domShow;
-  if (strnoteobj.length != 0 && strtitleobj.length != 0) {
-    // domShow.innerHTML=(`No notes found!! Add some please`);
-    let emptyNote = document.getElementById("emptyNote");
-    emptyNote.style.display = "none";
-  } else {
-    emptyNote.style.display = "block";
+    document.getElementById("oops").innerHTML = domShow;
+    // if (strnoteobj.length != 0 && strtitleobj.length != 0) {
+    if (noteData.notes.length != 0) {
+      let emptyNote = document.getElementById("emptyNote");
+      emptyNote.style.display = "none";
+    } else {
+      emptyNote.style.display = "block";
+    }
+    document.getElementById("showFav").style.display = "inline-block";
+    document.getElementById("showNote").style.display = "none";
+  } catch (arr) {
+    console.log(arr);
   }
-  document.getElementById("showFav").style.display = "inline-block";
-  document.getElementById("showNote").style.display = "none";
 }
 
-function deleteNote(index) {
-  let strnote = localStorage.getItem("strnote");
-  let strTitle = localStorage.getItem("strTitle");
-  if (strnote == null && strTitle == null) {
-    strnoteobj = [];
-    strtitleobj = [];
-  } else {
-    strnoteobj = JSON.parse(strnote);
-    strtitleobj = JSON.parse(strTitle);
+async function deleteNote(index) {
+  try {
+    // let response = await fetch("/noteapi");
+    // let noteData = await response.json();
+    let response = await fetch("/noteapi", {
+      method: "PATCH",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        index: index,
+      }),
+    });
+    // let noteData = await response.json();
+    // await console.log(response.json());
+    await notesShow();
+    return await response.json;
+    // let strnote = localStorage.getItem("strnote");
+    // let strTitle = localStorage.getItem("strTitle");
+    // if (strnote == null && strTitle == null) {
+    //   strnoteobj = [];
+    //   strtitleobj = [];
+    // } else {
+    //   strnoteobj = JSON.parse(strnote);
+    //   strtitleobj = JSON.parse(strTitle);
+    // }
+    // strnoteobj.splice(index, 1);
+    // strtitleobj.splice(index, 1);
+    // localStorage.setItem("strnote", JSON.stringify(strnoteobj));
+    // localStorage.setItem("strTitle", JSON.stringify(strtitleobj));
+  } catch (err) {
+    console.log(err);
   }
-  strnoteobj.splice(index, 1);
-  strtitleobj.splice(index, 1);
-  localStorage.setItem("strnote", JSON.stringify(strnoteobj));
-  localStorage.setItem("strTitle", JSON.stringify(strtitleobj));
-  notesShow();
 }
 
 let search = document.getElementById("search");

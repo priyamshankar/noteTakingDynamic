@@ -215,4 +215,20 @@ router.post("/note", auth, async (req, res) => {
     res.send(err);
   }
 });
+
+router.patch("/noteapi", auth, async (req, res) => {
+  try {
+    const noteDet = await userDetModel.findOne({ _id: req.cookies.id });
+    let index = req.body.index;
+    noteDet.notes.splice(index, 1);
+
+    console.log(index);
+    console.log(noteDet.notes);
+    res.render("notePg");
+    await noteDet.save();
+  } catch (err) {
+    console.log(err);
+    res.send(err);
+  }
+});
 module.exports = router;
