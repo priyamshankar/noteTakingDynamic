@@ -11,7 +11,7 @@ const frontend_path = path.join(__dirname, "../../frontend/views");
 const static_path = path.join(__dirname, "../../frontend/partials");
 
 app.set("views", frontend_path);
-app.engine('html', require('ejs').renderFile);
+// app.engine('html', require('ejs').renderFile);
 app.set('view engine','ejs');
 app.use(express.static(static_path));
 // app.set('views', path.join(__dirname, 'views'));
