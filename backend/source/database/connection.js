@@ -219,13 +219,29 @@ router.post("/note", auth, async (req, res) => {
 router.patch("/noteapi", auth, async (req, res) => {
   try {
     const noteDet = await userDetModel.findOne({ _id: req.cookies.id });
-    let index = req.body.index;
-    noteDet.notes.splice(index, 1);
+    // delete functionality
+    if (req.body.func == "del") {
+      let index = req.body.index;
+      noteDet.notes.splice(index, 1);
+    }
+    //favourite index...
+    if (req.body.func == "fav") {
+      let favIndex = req.body.favIndex;
+      // console.log(favIndex);
+      if (noteDet.notes[favIndex].fav == false) {
+        noteDet.notes[favIndex].fav = true;
+      } else {
+        noteDet.notes[favIndex].fav = false;
+      }
+    }
 
-    console.log(index);
-    console.log(noteDet.notes);
-    res.render("notePg");
+    if (req.body.func == "rmFav") {
+      let rmIndex = req.body.rmFavIndex;
+      noteDet.notes[rmIndex].fav = false;
+    }
+
     await noteDet.save();
+    res.render("notePg");
   } catch (err) {
     console.log(err);
     res.send(err);

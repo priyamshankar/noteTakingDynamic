@@ -105,6 +105,7 @@ async function deleteNote(index) {
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
         index: index,
+        func: "del",
       }),
     });
     // let noteData = await response.json();
@@ -145,56 +146,80 @@ search.addEventListener("input", function () {
   });
 });
 
-function addFav(favIndex) {
-  let favIndexobj;
+async function addFav(favIndex) {
   favIndex = favIndex / 100;
-  let favIndexstr = localStorage.getItem("favIndexstr");
-  if (favIndexstr == null) {
-    favIndexobj = [];
-  } else {
-    favIndexobj = JSON.parse(favIndexstr);
-  }
-  favIndexobj.push(favIndex);
-  localStorage.setItem("favIndexstr", JSON.stringify(favIndexobj));
+  let response = await fetch("/noteapi", {
+    method: "PATCH",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      favIndex: favIndex,
+      func: "fav",
+    }),
+  });
+  await notesShow();
+  return await response.json;
+
+  // let favIndexobj;
+  // let favIndexstr = localStorage.getItem("favIndexstr");
+  // if (favIndexstr == null) {
+  //   favIndexobj = [];
+  // } else {
+  //   favIndexobj = JSON.parse(favIndexstr);
+  // }
+  // favIndexobj.push(favIndex);
+  // localStorage.setItem("favIndexstr", JSON.stringify(favIndexobj));
 }
 
-function favourites() {
-  let favcount = localStorage.getItem("favIndexstr");
-  if (favcount == null) {
-    favcount = [];
-  } else {
-    favcount = JSON.parse(favcount);
-  }
+async function favourites() {
+  let response = await fetch("/noteapi");
+  let noteData = await response.json();
+  // let favcount = localStorage.getItem("favIndexstr");
+  // if (favcount == null) {
+  //   favcount = [];
+  // } else {
+  //   favcount = JSON.parse(favcount);
+  // }
   let favDomshow = "";
-  favcount.forEach(function (element, index) {
-    favDomshow += `  <div class="card text-dark bg-warning mb-3 mx-3 my-3" style="max-width: 18rem;display:inline-flex;min-width: 10rem">
-        <div class="card-header">Note ${element + 1} </div>
+  await noteData.notes.forEach(function (element, index) {
+    if (noteData.notes[index].fav == true) {
+      favDomshow += `  <div class="card text-dark bg-warning mb-3 mx-3 my-3" style="max-width: 18rem;display:inline-flex;min-width: 10rem">
+        <div class="card-header">Note ${index + 1} </div>
         <div class="card-body">
-            <h5 class="card-title">${strtitleobj[element]}</h5>
-            <p class="card-text">${strnoteobj[element]}</p>
+            <h5 class="card-title">${noteData.notes[index].title}</h5>
+            <p class="card-text">${noteData.notes[index].bodyCont}</p>
         <button type="button" class="my-3 mx-3 btn btn-outline-danger remFavcl" id="${index}000" onclick="rmFav(this.id)">Remove from Fav </button>
-
         </div>
     </div>`;
-    document.getElementById("oops").innerHTML = favDomshow;
+      document.getElementById("oops").innerHTML = favDomshow;
+    }
   });
-  if (favcount.length == 0) {
+  if (favDomshow == "") {
     document.getElementById("oops").innerHTML = "<h5>Nothing to show!</h5>";
   }
   document.getElementById("showFav").style.display = "none";
   document.getElementById("showNote").style.display = "inline-block";
 }
 
-function rmFav(index) {
+async function rmFav(index) {
   index = index / 1000;
-  let rmCounter = localStorage.getItem("favIndexstr");
-  rmCounter = JSON.parse(rmCounter);
-  rmCounter.splice(index, 1);
-  localStorage.setItem("favIndexstr", JSON.stringify(rmCounter));
-  favourites();
+  let response = await fetch("/noteapi", {
+    method: "PATCH",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      rmFavIndex: index,
+      func: "rmFav",
+    }),
+  });
+  // console.log(index);
+  await favourites();
+  return await response.json;
+  // let rmCounter = localStorage.getItem("favIndexstr");
+  // rmCounter = JSON.parse(rmCounter);
+  // rmCounter.splice(index, 1);
+  // localStorage.setItem("favIndexstr", JSON.stringify(rmCounter));
 }
 
-// remaining features are show feature button changes dynamicly to show notes button when pressed
-// syncing the notes to the server
+// remaining features are show feature button changes dynamicly to show notes button when pressed ...checked
+// syncing the notes to the server  ...checked
 // making a chrome extension and syncing that to the server
-//when deletin, delete it from the favourite menu too..
+//when deletin, delete it from the favourite menu too  ..checked
