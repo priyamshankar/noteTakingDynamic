@@ -3,21 +3,6 @@ let note = document.getElementById("exampleFormControlTextarea1");
 let add_note = document.getElementById("add_note");
 let showFav = document.getElementById("showFav");
 
-// let abcd;
-// async function getData() {
-//   let response = await fetch("/noteapi");
-//   let noteData = await response.json();
-//   // console.log(noteData);
-//   // abcd = noteData;
-//   //   console.log(abcd);
-//   return noteData;
-// }
-// let a = getData().then((resp) => {
-//   // console.log(resp.firstName);
-//   abcd = json.parse(resp);
-// //   return resp;
-// });
-
 notesShow();
 
 add_note.addEventListener("click", function () {
@@ -43,10 +28,22 @@ add_note.addEventListener("click", function () {
   notesShow();
 });
 
+async function favOrNot(i) {
+  let response = await fetch("/noteapi");
+  let noteData = await response.json();
+  if (await noteData.notes[i].fav) {
+    return "Remove fav";
+  } else {
+    return "Add fav";
+  }
+}
+
 async function notesShow() {
   try {
     let response = await fetch("/noteapi");
     let noteData = await response.json();
+    let btnFav;
+    
     // console.log(noteData.notes[0].title);
     // let strnote = localStorage.getItem("strnote");
     // // strnote=noteData.notes.title;
@@ -62,6 +59,11 @@ async function notesShow() {
     // let favindex = localStorage.getItem("favIndexstr");
     // favindex = JSON.parse(favindex);
     await noteData.notes.forEach(function (element, index) {
+      if (noteData.notes[index].fav) {
+        btnFav = "Remove from fav";
+      } else {
+        btnFav = "Add fav";
+      }
       domShow += `  <div class="card text-dark bg-warning mb-3 mx-3 my-3" style="max-width: 18rem;display:inline-flex;min-width: 10rem">
         <div class="card-header">Note ${
           index + 1
@@ -70,8 +72,9 @@ async function notesShow() {
         <div class="card-body">
             <h5 class="card-title">${noteData.notes[index].title}</h5>
             <p class="card-text">${noteData.notes[index].bodyCont}</p>
-            <button type="button" class="btn btn-outline-light" id="${index}00" onclick="addFav(this.id)">Add to fav</button>
-
+            <button type="button" class="btn btn-outline-light" id="${index}00" onclick="addFav(this.id)">
+            ${btnFav}
+            </button>
         </div>
     </div>`;
 
@@ -80,6 +83,8 @@ async function notesShow() {
       //     document.getElementById("index").style.display = "none";
       // }
     });
+
+    // function showFvBtn(){}
 
     document.getElementById("oops").innerHTML = domShow;
     // if (strnoteobj.length != 0 && strtitleobj.length != 0) {
