@@ -187,7 +187,7 @@ router.get("/google", passport.authenticate("google"), (req, res) => {
   res.redirect("/");
 });
 
-router.get("/note", async (req, res) => {
+router.get("/note", auth, async (req, res) => {
   const user = await userDetModel.findOne({ _id: req.cookies.id });
   res.render("notePg", {
     cookie: req.cookies.jwt,
