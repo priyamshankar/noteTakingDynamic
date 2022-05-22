@@ -16,7 +16,11 @@ router.get("/", async (req, res) => {
   res.redirect("/note");
 });
 
-router.get("/registration", (req, res) => {
+router.get("/registration", async(req, res) => {
+  const user = await userDetModel.findOne({ _id: req.cookies.id });
+  if (user != null) {
+    res.redirect("/");
+  }
   res.render("registrationPage");
 });
 
@@ -40,22 +44,26 @@ router.post("/registration", async (req, res) => {
       console.log(saveUserDet);
       await saveUserDet.save();
       const token = await saveUserDet.generateAuthToken(); //generateAuthToken is user defined
-      res.cookie(`jwt register`, token, {
-        expires: new Date(Date.now() + 8 * 3600000),
+      res.cookie(`jwt`, token, {
+        // expires: new Date(Date.now() + 8 * 3600000),
         httpOnly: true,
       });
       res.render("loginPage");
     } else {
-      res.send("password didn't matche");
+      res.send("password didn't match");
     }
   } catch (err) {
     console.log(err);
   }
 });
 
-router.get("/login", (req, res) => {
-  res.render("loginPage");
-  // console.log(req.cookies.jwt);
+router.get("/login", async (req, res) => {
+  const user = await userDetModel.findOne({ _id: req.cookies.id });
+  if (user != null) {
+    res.redirect("/");
+  } else {
+    res.render("loginPage");
+  }
 });
 
 router.post("/login", async (req, res) => {
@@ -64,21 +72,19 @@ router.post("/login", async (req, res) => {
     const loginDetDb = await userDetModel.findOne({ userName: userName });
     const password = req.body.password;
     const pwComp = await bcrypt.compare(password, loginDetDb.password);
-    // console.log(loginDetDb);
+    const user = await userDetModel.findOne({ _id: req.cookies.id });
+    if (user != null) {
+      res.redirect("/activity");
+    }
     if (pwComp) {
       const token = await loginDetDb.generateAuthToken();
       res.cookie("jwt", token, {
-        expires: new Date(Date.now() + 3000000),
         httpOnly: true,
       });
       res.cookie("id", loginDetDb._id, {
-        expires: new Date(Date.now() + 3000000),
         httpOnly: true,
       });
-      // res.render("index");
-      res.redirect("/");
-      // res.render("authenticate");
-      // console.log(token);
+      res.redirect("/activity");
     } else {
       res.send("password or user id wrong");
     }

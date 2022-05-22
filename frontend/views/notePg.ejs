@@ -14,8 +14,11 @@
   </head>
 
   <body>
+    <%- include('navbar') -%>
+
     <div class="container">
-      <nav class="navbar navbar-light bg-light">
+      <br><br><br>
+      <!-- <nav class="navbar navbar-light bg-light">
         <div class="container-fluid">
           <a class="navbar-brand">Jelly Notes</a>
           <form class="d-flex">
@@ -26,10 +29,9 @@
               placeholder="Search"
               aria-label="Search"
             />
-            <!-- <button class="btn btn-outline-success" type="submit">Search</button> -->
           </form>
         </div>
-      </nav>
+      </nav> -->
 
       <div class="mb-3 my-2 mx-4">
         <form action="/note" method="POST">
@@ -40,7 +42,8 @@
             type="text"
             class="form-control"
             id="exampleFormControlInput1"
-            placeholder="Enter the Title here" name="titleObj"
+            placeholder="Enter the Title here"
+            name="titleObj"
           />
           <!-- </div> -->
           <!-- <div class="mb-3 mx-4"> -->
@@ -50,7 +53,8 @@
           <textarea
             class="form-control"
             id="exampleFormControlTextarea1"
-            rows="3" name="contentObj"
+            rows="3"
+            name="contentObj"
           ></textarea>
           <button
             type="submit"
