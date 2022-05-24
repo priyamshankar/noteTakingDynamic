@@ -89,7 +89,7 @@ router.post("/login", async (req, res) => {
       res.send("password or user id wrong");
     }
   } catch (err) {
-    res.send("error");
+    res.send(`unregistered user, Either register yourself or login with google on  <a href="/login">previous page.</a>`);
     console.log(err);
   }
 });
